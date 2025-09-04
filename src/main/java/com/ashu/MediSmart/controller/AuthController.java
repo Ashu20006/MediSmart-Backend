@@ -7,6 +7,7 @@ import com.ashu.MediSmart.entity.User;
 import com.ashu.MediSmart.service.AuthService;
 import com.ashu.MediSmart.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,5 +29,9 @@ public class AuthController {
     public String login(@RequestBody LoginRequest request) {
         return authService.login(request);
     }
+
+//    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+//        return ResponseEntity.ok(authService.login(request));
+//    }
 
 }
