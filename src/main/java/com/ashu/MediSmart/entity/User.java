@@ -20,9 +20,10 @@ public class User {
     private String password;
 
     // Many users can have one role
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
 
     // 🔹 Constructors
     public User() {
