@@ -1,33 +1,38 @@
 package com.ashu.MediSmart.service;
 
-
 import com.ashu.MediSmart.DTO.LoginRequest;
-import com.ashu.MediSmart.entity.User;
-import com.ashu.MediSmart.repository.UserRepository;
 import com.ashu.MediSmart.security.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    public AuthService(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+    }
 
     public String login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        try {
+            // Let Spring Security handle authentication
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            );
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
+            // If successful, generate token
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            return jwtUtil.generateToken(userDetails.getUsername(), userDetails.getAuthorities().toString());
+
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialsException("Invalid email or password", e);
         }
-
-        return jwtUtil.generateToken(user.getEmail(), user.getRole().getName());
     }
 }

@@ -1,5 +1,6 @@
 package com.ashu.MediSmart.config;
 
+import com.ashu.MediSmart.security.JwtAuthenticationEntryPoint;
 import com.ashu.MediSmart.security.JwtAuthenticationFilter;
 import com.ashu.MediSmart.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
@@ -18,27 +19,28 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final UserDetailsServiceImpl userDetailsService;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter,
-                          UserDetailsServiceImpl userDetailsService) {
+                          UserDetailsServiceImpl userDetailsService,
+                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.userDetailsService = userDetailsService;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
-                        .requestMatchers("/api/auth/**").permitAll() // <-- Register & Login allowed
-
-                        // Role-based access
+                        .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/doctor/**").hasAuthority("DOCTOR")
                         .requestMatchers("/api/patient/**").hasAuthority("PATIENT")
-
-                        // Everything else requires authentication
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint) // Add this line
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
