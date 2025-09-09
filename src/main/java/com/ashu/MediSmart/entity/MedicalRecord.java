@@ -4,6 +4,7 @@ import com.ashu.MediSmart.entity.Appointment;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+// here we will check medical records
 @Entity
 @Table(name = "medical_records")
 public class MedicalRecord {
