@@ -5,6 +5,7 @@ import com.ashu.MediSmart.entity.Appointment;
 import com.ashu.MediSmart.entity.Status;
 import com.ashu.MediSmart.service.AppointmentService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,13 +20,15 @@ public class AppointmentController {
         this.appointmentService = appointmentService;
     }
 
-    // Patient books appointment
+    //  Only PATIENT can book appointment
+    @PreAuthorize("hasAuthority('PATIENT')")
     @PostMapping("/book")
     public ResponseEntity<Appointment> bookAppointment(@RequestBody AppointmentRequest request) {
         return ResponseEntity.ok(appointmentService.bookAppointment(request));
     }
 
-    // Doctor approves/rejects appointment
+    //  Only DOCTOR can update status
+    @PreAuthorize("hasAuthority('DOCTOR')")
     @PutMapping("/{id}/status")
     public ResponseEntity<Appointment> updateStatus(
             @PathVariable Long id,
@@ -33,7 +36,8 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.updateStatus(id, status));
     }
 
-    // Admin views all appointments
+    //  Only ADMIN can view all appointments
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<List<Appointment>> getAllAppointments() {
         return ResponseEntity.ok(appointmentService.getAllAppointments());
