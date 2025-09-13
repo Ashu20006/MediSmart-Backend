@@ -24,13 +24,29 @@ public class UserService {
         User user = new User();
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword())); // hash password
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
-        // fetch Role entity by role name
+        // fetch Role entity
         Role role = roleRepository.findByName(userDTO.getRole())
                 .orElseThrow(() -> new RuntimeException("Role not found: " + userDTO.getRole()));
-
         user.setRole(role);
+
+        // 🔹 If DOCTOR → set doctor-specific fields
+        if ("DOCTOR".equalsIgnoreCase(userDTO.getRole())) {
+            user.setSpecialty(userDTO.getSpecialty());
+            user.setLocation(userDTO.getLocation());
+            user.setYearsOfExperience(userDTO.getYearsOfExperience());
+            user.setRating(userDTO.getRating());
+            user.setAvailability(userDTO.getAvailability());
+        }
+
+        // 🔹 If PATIENT → set age
+        if ("PATIENT".equalsIgnoreCase(userDTO.getRole())) {
+            if (userDTO.getAge() == null || userDTO.getAge() <= 0) {
+                throw new RuntimeException("Age is required for patient registration");
+            }
+            user.setAge(userDTO.getAge());
+        }
 
         return userRepository.save(user);
     }
