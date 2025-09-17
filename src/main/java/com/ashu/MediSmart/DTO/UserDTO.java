@@ -4,16 +4,23 @@ public class UserDTO {
     private String name;
     private String email;
     private String password;
-    private String role;  // "ADMIN", "DOCTOR", "PATIENT"
+    private String confirmPassword; //  added
+    private String role;
 
-    // 🔹 Doctor-specific fields
+    // Common fields
+    private String phoneNumber;
+    private String gender;
+
+    // Doctor-specific fields
     private String specialty;
     private String location;
     private int yearsOfExperience;
     private double rating;
     private String availability;
+    private String qualification;
+    private String bio;
 
-    // 🔹 Patient-specific field
+    // Patient-specific field
     private Integer age;
 
     // Getters & Setters
@@ -26,8 +33,17 @@ public class UserDTO {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
+    public String getConfirmPassword() { return confirmPassword; }
+    public void setConfirmPassword(String confirmPassword) { this.confirmPassword = confirmPassword; }
+
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
 
     public String getSpecialty() { return specialty; }
     public void setSpecialty(String specialty) { this.specialty = specialty; }
@@ -44,10 +60,14 @@ public class UserDTO {
     public String getAvailability() { return availability; }
     public void setAvailability(String availability) { this.availability = availability; }
 
+    public String getQualification() { return qualification; }
+    public void setQualification(String qualification) { this.qualification = qualification; }
+
+    public String getBio() { return bio; }
+    public void setBio(String bio) { this.bio = bio; }
+
     public Integer getAge() { return age; }
     public void setAge(Integer age) { this.age = age; }
-
-    // inside UserDTO.java
 
     // Constructor for doctor recommendation response
     public UserDTO(Long id, String name, String specialty, String location,
@@ -60,4 +80,5 @@ public class UserDTO {
         this.availability = availability;
     }
 
+    public UserDTO() {}
 }

@@ -2,6 +2,7 @@ package com.ashu.MediSmart.service;
 
 import com.ashu.MediSmart.DTO.LoginRequest;
 import com.ashu.MediSmart.security.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +15,12 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+
+
+
+    public String extractUsername(String token) {
+        return jwtUtil.extractUsername(token);
+    }
 
     public AuthService(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;

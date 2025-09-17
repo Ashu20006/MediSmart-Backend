@@ -1,5 +1,6 @@
 package com.ashu.MediSmart.security;
 
+import com.ashu.MediSmart.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -22,23 +23,23 @@ public class JwtUtil {
 
     private final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
 
-    // ✅ Extract username (email in our case)
+    //  Extract username (email in our case)
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    // ✅ Extract role (optional helper)
+    //  Extract role (optional helper)
     public String extractRole(String token) {
         final Claims claims = extractAllClaims(token);
         return claims.get("role", String.class);
     }
 
-    // ✅ Extract expiration
+    //  Extract expiration
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    // ✅ Generic claim extractor
+    //  Generic claim extractor
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -75,7 +76,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    // ✅ Validate token
+    // Validate token
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));

@@ -32,5 +32,9 @@ public class DoctorRecommendationService {
                 ))
                 .collect(Collectors.toList());
     }
+    public List<String> getUniqueLocations() {
+        return userRepository.findDistinctDoctorLocations();
+    }
+
 
 }
