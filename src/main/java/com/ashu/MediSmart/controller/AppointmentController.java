@@ -36,6 +36,24 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.updateStatus(id, status));
     }
 
+    //get by appoinment ID not user
+    @GetMapping("/{id}")
+    public ResponseEntity<Appointment> getAppointmentById(@PathVariable Long id) {
+        return ResponseEntity.ok(appointmentService.getAppointmentById(id));
+    }
+
+    //get by user id
+    @GetMapping("/patient/{patientId}")
+    public ResponseEntity<List<Appointment>> getAppointmentsByPatient(@PathVariable Long patientId) {
+        List<Appointment> appointments = appointmentService.getAppointmentsByPatient(patientId);
+        return ResponseEntity.ok(appointments);
+    }
+    // get by doctor
+    @GetMapping("/doctor/{doctorId}")
+    public List<Appointment> getAppointmentsByDoctorId(@PathVariable Long doctorId) {
+        return appointmentService.getAppointmentsByDoctorId(doctorId);
+    }
+
     //  Only ADMIN can view all appointments
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/all")

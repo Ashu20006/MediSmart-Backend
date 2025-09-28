@@ -106,6 +106,7 @@ public class AuthController {
 
             // Convert User → UserDTO (include doctor fields)
             UserDTO dto = new UserDTO();
+            dto.setId(user.getId()); // Add this line to include user ID
             dto.setName(user.getName());
             dto.setEmail(user.getEmail());
             dto.setRole(user.getRole().getName());
@@ -126,7 +127,6 @@ public class AuthController {
 
         return ResponseEntity.status(401).build();
     }
-
 
 
 }

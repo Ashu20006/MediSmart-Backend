@@ -46,6 +46,21 @@ public class AppointmentService {
         return appointmentRepository.save(appointment);
     }
 
+    public Appointment getAppointmentById(Long id) {
+        return appointmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found with id: " + id));
+    }
+
+    public List<Appointment> getAppointmentsByDoctorId(Long doctorId) {
+        return appointmentRepository.findByDoctorId(doctorId);
+    }
+
+
+    public List<Appointment> getAppointmentsByPatient(Long patientId) {
+        return appointmentRepository.findByPatientId(patientId);
+    }
+
+
     // Admin views all appointments
     public List<Appointment> getAllAppointments() {
         return appointmentRepository.findAll();

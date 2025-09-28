@@ -22,10 +22,13 @@ public class DoctorRecommendationController {
     public ResponseEntity<List<UserDTO>> recommendDoctors(
             @RequestParam String specialty,
             @RequestParam String location,
-            @RequestParam String availability
-    ) {
-        return ResponseEntity.ok(recommendationService.recommendDoctors(specialty, location, availability));
+            @RequestParam String availability) {
+
+        List<UserDTO> doctors = recommendationService.recommendDoctors(specialty, location, availability);
+
+        return ResponseEntity.ok(doctors);
     }
+
     @GetMapping("/locations")
     public ResponseEntity<?> getDoctorLocations() {
         try {

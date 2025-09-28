@@ -1,7 +1,17 @@
 package com.ashu.MediSmart.DTO;
 
 public class UserDTO {
+    private long id;
     private String name;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     private String email;
     private String password;
     private String confirmPassword; //  added
@@ -72,6 +82,7 @@ public class UserDTO {
     // Constructor for doctor recommendation response
     public UserDTO(Long id, String name, String specialty, String location,
                    int yearsOfExperience, double rating, String availability) {
+        this.id = id;
         this.name = name;
         this.specialty = specialty;
         this.location = location;

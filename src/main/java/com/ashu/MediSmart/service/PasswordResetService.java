@@ -29,13 +29,14 @@ public class PasswordResetService {
         this.mailSender = mailSender;
     }
 
+    // Send OTP to user's email
     public void sendOtp(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         String otp = String.valueOf(new Random().nextInt(900000) + 100000); // 6-digit OTP
 
-        // Save OTP in DB with expiry 10 min
+        // Save OTP in DB with 10 min expiry
         PasswordResetToken token = new PasswordResetToken();
         token.setEmail(email);
         token.setOtp(otp);
@@ -50,11 +51,23 @@ public class PasswordResetService {
         mailSender.send(message);
     }
 
+    // Verify OTP
+    public boolean verifyOtp(String email, String otp) {
+        PasswordResetToken token = tokenRepository.findByEmailAndOtp(email, otp)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid OTP"));
+
+        if (token.getExpiry().isBefore(LocalDateTime.now())) {
+            tokenRepository.delete(token);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP has expired");
+        }
+        return true;
+    }
+
+    // Reset password after OTP verification
     public void resetPassword(String email, String otp, String newPassword) {
         PasswordResetToken token = tokenRepository.findByEmailAndOtp(email, otp)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP is incorrect"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid OTP"));
 
-        // Check expiry
         if (token.getExpiry().isBefore(LocalDateTime.now())) {
             tokenRepository.delete(token);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP has expired");
@@ -63,9 +76,11 @@ public class PasswordResetService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
+        // Encode new password and save
         user.setPassword(new BCryptPasswordEncoder().encode(newPassword));
         userRepository.save(user);
 
-        tokenRepository.delete(token); // remove used OTP
+        // Delete used OTP token
+        tokenRepository.delete(token);
     }
 }
