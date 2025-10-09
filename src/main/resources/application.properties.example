@@ -1,6 +1,0 @@
-spring.datasource.url=jdbc:mysql://localhost:3306/your_db
-spring.datasource.username=your_username
-spring.datasource.password=your_password
-jwt.secret-key=YourJWTSecretKeyHere
-spring.mail.username=your_email@gmail.com
-spring.mail.password=your_email_password
